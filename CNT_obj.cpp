@@ -103,9 +103,9 @@
 			kap_cnt_array[n]=y_kap_cnt[n];
 		}
 	    //measure some lengths
-	    for(n=0;n<N_cnt/6-1;n++){
+	    for(n=0;n<N_cnt/6-1;n++)
+	    {
 	        d[n]=0;
-			
 	        for(i=0;i<3;i++)
 		{
 	            temp=y[(n+1)*6+i]-y[n*6+i];
@@ -113,7 +113,7 @@
 	            temp*=temp;
 	            d[n]+=temp;
 		}
-	            d[n]=sqrt(d[n]);
+	        d[n]=sqrt(d[n]);
 	    }
 	    //perform some dot-products
 		rr=Del[6]*Del[0]+Del[7]*Del[1]+Del[8]*Del[2];
