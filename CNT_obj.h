@@ -35,6 +35,11 @@ class CNT_obj
 		double h_cnt;
 		double F_cnt;
 		double Fper_cnt;
+		double* ymass;
+	    double* y_K_cnt;
+	    double* y_kap_cnt;
+	    long long int Nmass, N_K_cnt, N_kap_cnt;
+	    double* massarray,*K_cnt_array,*kap_cnt_array;
 		const static double sigma=7.767E-25;
 		const static double kb=1.38E-29;
 		
@@ -48,6 +53,7 @@ class CNT_obj
 		void update_sig() ;
 		void update_Ks();
 		double get_sig();
+		void load_Property_arrays();
 		CNT_obj(double , double , int);
 		double* massRead(char*,long long);
 		double* K_cnt_read(char*,long long);
