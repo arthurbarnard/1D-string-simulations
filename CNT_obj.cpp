@@ -140,9 +140,9 @@
 	        // dVx/dt = -gamma*Vx + F_Vx(t) ... dVz/dt = -gamma*Vz + F_Vz(t)
 		for(i=0;i<3;i++){
 	            m=n+i;
-	            f[m+3]=(-gam_cnt*y[m+3])/(massarray[m])+ //damping forces
-			   (K_cnt_array[m]*(Del[m]*(1-X0_cnt/d2)-Del[m-6]*(1-X0_cnt/d1)))/(massarray[m])+ //forces due to stretching
-		    	   (kap_cnt_array[m-1]*(Del[m-12]-Del[m-6]*rr/d11)/d01-kap_cnt_array[m+1]*(Del[m+6]-Del[m]*rr2/d22)/d32+kap_cnt_array[m]*(Del[m]*(1+rr1/d22)-Del[m-6]*(1+rr1/d11))/d12)/(massarray[m]);//forces due to bending
+	            f[m+3]=(-gam_cnt*y[m+3])/(massarray[n/6])+ //damping forces
+			   (K_cnt_array[m]*(Del[m]*(1-X0_cnt/d2)-Del[m-6]*(1-X0_cnt/d1)))/(massarray[n/6])+ //forces due to stretching
+		    	   (kap_cnt_array[m-1]*(Del[m-12]-Del[m-6]*rr/d11)/d01-kap_cnt_array[m+1]*(Del[m+6]-Del[m]*rr2/d22)/d32+kap_cnt_array[m]*(Del[m]*(1+rr1/d22)-Del[m-6]*(1+rr1/d11))/d12)/(massarray[n/6]);//forces due to bending
 	        }
 	        //shift stored values for reuse on next data point
 		rr=rr1;
@@ -280,7 +280,7 @@
 		void CNT_stoerm(double [], double, double, int, void(double [], double, double[]));
 	}
 
-double* massRead(char filename[],long long Nmass)
+double* CNT_obj::massRead(char filename[],long long Nmass)
 {
 	ifstream massfile("mass.txt", ios::in);
 	massfile.seekg(0,ios::beg);
@@ -296,7 +296,7 @@ double* massRead(char filename[],long long Nmass)
 	return x;	
 }
 
-double* K_cnt_read(char filename[], long long N_K_cnt)
+double* CNT_obj::K_cnt_read(char filename[], long long N_K_cnt)
 {
 	ifstream K_cnt_file("K_cnt.txt",ios::in);
 	K_cnt_file.seekg(0,ios::beg);
@@ -312,7 +312,7 @@ double* K_cnt_read(char filename[], long long N_K_cnt)
 	return x;
 }
 
-double* kap_cnt_read(char filename[], long long N_kap_cnt)
+double* CNT_obj::kap_cnt_read(char filename[], long long N_kap_cnt)
 {
 	ifstream kap_cnt_file("kap_cnt.txt",ios::in);
 	kap_cnt_file.seekg(0,ios::beg);
