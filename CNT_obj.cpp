@@ -1,4 +1,6 @@
 #include "CNT_obj.h"
+#include <fstream>
+#include <cstdlib>
 
 	// CNT_ode4 is an implemenetation of the 4th order runge kutta method. The right hand side (frhs)
 	// stores the details of the forces in the equation of motion, this is a separate equation called below.	
@@ -80,9 +82,9 @@
 	    double* ymass;
 	    double* y_K_cnt;
 	    double* y_kap_cnt;
-	    double* massRead(char [], long long);
-	    double* K_cnt_read(char[], long long);
-	    double* kap_cnt_read(char[], long long);
+// 	    double* massRead(char [], long long); When you compile this program, we get an undefined reference error. I believe these defintions are left unused so I commented them out
+// 	    double* K_cnt_read(char[], long long);
+// 	    double* kap_cnt_read(char[], long long);
 	    char* initfile=new char[20000];
 		
 		ymass=(double*)massRead(initfile, Nmass);
