@@ -74,18 +74,45 @@
 	// myrhs is the specific set of 1st order ODEs to be solved
 	void CNT_obj::CNT_myrhs(double y[], double t, double f[])
 	{
-	    double d0,d1,d2,d3,d01,d11,d22,d32,d12,temp,rr,rr1,rr2,d[N_cnt/6],Del[N_cnt],a;
+	    double d0,d1,d2,d3,d01,d11,d22,d32,d12,temp,rr,rr1,rr2,d[N_cnt/6],Del[N_cnt],a,massarray[102],K_cnt_array[102],kap_cnt_array[102];
 	    int m,i,n;
+	    long long int Nmass, N_K_cnt, N_kap_cnt;
+	    double* ymass;
+	    double* y_K_cnt;
+	    double* y_kap_cnt;
+	    double* massRead(char [], long long);
+	    double* K_cnt_read(char[], long long);
+	    double* kap_cnt_read(char[], long long);
+	    char* initfile=new char[20000];
+		
+		ymass=(double*)massRead(initfile, Nmass);
+		for(n=0;n<102;n++)
+		{
+			massarray[n]=ymass[n];
+		}
+		
+		y_K_cnt=(double*)K_cnt_read(initfile, N_K_cnt);
+		for (n=0;n<102;n++)
+		{
+			K_cnt_array[n]=y_K_cnt[n];
+		}
+		
+		y_kap_cnt=(double*)kap_cnt_read(initfile, N_kap_cnt);
+		for (n=0;n<102;n++)
+		{
+			kap_cnt_array[n]=y_kap_cnt[n];
+		}
 	    //measure some lengths
-	    for(n=0;n<N_cnt/6-1;n++){
+	    for(n=0;n<N_cnt/6-1;n++)
+	    {
 	        d[n]=0;
-			
-	        for(i=0;i<3;i++){
+	        for(i=0;i<3;i++)
+		{
 	            temp=y[(n+1)*6+i]-y[n*6+i];
 	            Del[n*6+i]=temp;
 	            temp*=temp;
 	            d[n]+=temp;
-			}
+		}
 	        d[n]=sqrt(d[n]);
 	    }
 	    //perform some dot-products
@@ -111,14 +138,14 @@
 	        d3=d[n/6+1];
 	        d32=d3*d2;
 	        // dVx/dt = -gamma*Vx + F_Vx(t) ... dVz/dt = -gamma*Vz + F_Vz(t)
-			for(i=0;i<3;i++){
+		for(i=0;i<3;i++){
 	            m=n+i;
-	            f[m+3]=-gam_cnt*y[m+3]+ //damping forces
-						K_cnt*(Del[m]*(1-X0_cnt/d2)-Del[m-6]*(1-X0_cnt/d1))+ //forces due to stretching
-						kap_cnt*((Del[m-12]-Del[m-6]*rr/d11)/d01-(Del[m+6]-Del[m]*rr2/d22)/d32+(Del[m]*(1+rr1/d22)-Del[m-6]*(1+rr1/d11))/d12);//forces due to bending
+	            f[m+3]=(-gam_cnt*y[m+3])/(massarray[n/6])+ //damping forces
+			   (K_cnt_array[m]*(Del[m]*(1-X0_cnt/d2)-Del[m-6]*(1-X0_cnt/d1)))/(massarray[n/6])+ //forces due to stretching
+		    	   (kap_cnt_array[m-1]*(Del[m-12]-Del[m-6]*rr/d11)/d01-kap_cnt_array[m+1]*(Del[m+6]-Del[m]*rr2/d22)/d32+kap_cnt_array[m]*(Del[m]*(1+rr1/d22)-Del[m-6]*(1+rr1/d11))/d12)/(massarray[n/6]);//forces due to bending
 	        }
 	        //shift stored values for reuse on next data point
-			rr=rr1;
+		rr=rr1;
 	        rr1=rr2;
 	        rr2=Del[n+6]*Del[n+12]+Del[n+7]*Del[n+13]+Del[n+8]*Del[n+14];			
 	    }
@@ -252,6 +279,54 @@
 		void CNT_ode4(double [], double, double, void(double [], double, double[]));
 		void CNT_stoerm(double [], double, double, int, void(double [], double, double[]));
 	}
+
+double* CNT_obj::massRead(char filename[],long long Nmass)
+{
+	ifstream massfile("mass.txt", ios::in);
+	massfile.seekg(0,ios::beg);
+	double sizemass=double(-massfile.tellg());
+	massfile.seekg(0,ios::end);
+	sizemass+=double(massfile.tellg());
+	char* h=(char*)malloc((int)sizemass);
+	massfile.seekg(0,ios::beg);
+	massfile.read(h,sizemass);
+	double* x=(double*)h;
+	Nmass=(int)sizemass/8;
+	massfile.close();
+	return x;	
+}
+
+double* CNT_obj::K_cnt_read(char filename[], long long N_K_cnt)
+{
+	ifstream K_cnt_file("K_cnt.txt",ios::in);
+	K_cnt_file.seekg(0,ios::beg);
+	double size_K_cnt=double(-K_cnt_file.tellg());
+	K_cnt_file.seekg(0,ios::end);
+	size_K_cnt+=double(K_cnt_file.tellg());
+	char* h=(char*)malloc((int)size_K_cnt);
+	K_cnt_file.seekg(0,ios::beg);
+	K_cnt_file.read(h,size_K_cnt);
+	double* x=(double*)h;
+	N_K_cnt=(int)size_K_cnt/8;
+	K_cnt_file.close();
+	return x;
+}
+
+double* CNT_obj::kap_cnt_read(char filename[], long long N_kap_cnt)
+{
+	ifstream kap_cnt_file("kap_cnt.txt",ios::in);
+	kap_cnt_file.seekg(0,ios::beg);
+	double size_kap_cnt=double(-kap_cnt_file.tellg());
+	kap_cnt_file.seekg(0,ios::end);
+	size_kap_cnt+=double(kap_cnt_file.tellg());
+	char* h=(char*)malloc((int)size_kap_cnt);
+	kap_cnt_file.seekg(0,ios::beg);
+	kap_cnt_file.read(h,size_kap_cnt);
+	double* x=(double*)h;
+	N_kap_cnt=(int)size_kap_cnt/8;
+	kap_cnt_file.close();
+	return x;
+}
 
 	
 

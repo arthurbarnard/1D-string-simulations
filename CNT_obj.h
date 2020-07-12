@@ -49,7 +49,9 @@ class CNT_obj
 		void update_Ks();
 		double get_sig();
 		CNT_obj(double , double , int);
-
+		double* massRead(char*,long long);
+		double* K_cnt_read(char*,long long);
+		double* kap_cnt_read(char*,long long);
 };//end of CNT_obj definition
 
 #endif
