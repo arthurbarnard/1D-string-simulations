@@ -125,10 +125,10 @@
 	    for(i=0;i<3;i++){
 	            m=n+i;
 	            f[m+3]=0*(-gam_cnt*y[m+3])/(massarray[n/6])+ //damping forces
-			    (K_cnt_array[n/6]/massarray[n/6])*(Del[m]*(1-X0_cnt/d2)-Del[m-6]*(1-X0_cnt/d1))+ //forces due to stretching
-		    	   (kap_cnt_array[n/6-1]/massarray[n/6])*(Del[m-12]-Del[m-6]*rr/d11)/d01-
-				   (kap_cnt_array[n/6+1]/massarray[n/6])*(Del[m+6]-Del[m]*rr2/d22)/d32+
-				   (kap_cnt_array[n/6]/massarray[n/6])*(Del[m]*(1+rr1/d22)-Del[m-6]*(1+rr1/d11))/d12;//forces due to bending
+			     (K_cnt_array[n/6]/massarray[n/6])*(Del[m]*(1-X0_cnt/d2)-Del[m-6]*(1-X0_cnt/d1))+ //forces due to stretching
+		    	     (kap_cnt_array[n/6-1]/massarray[n/6])*(Del[m-12]-Del[m-6]*rr/d11)/d01-
+			     (kap_cnt_array[n/6+1]/massarray[n/6])*(Del[m+6]-Del[m]*rr2/d22)/d32+
+			     (kap_cnt_array[n/6]/massarray[n/6])*(Del[m]*(1+rr1/d22)-Del[m-6]*(1+rr1/d11))/d12;//forces due to bending
 			
 			}
 	        //shift stored values for reuse on next data point
@@ -174,7 +174,7 @@
 		if ((temp=AM*iy)>RNMX) return RNMX;
 		else return temp;
 	}
-		
+
 	//performs one step of numerical integration with runge kutta
 	void CNT_obj::timestep( double t_in)
 	{	
@@ -189,35 +189,41 @@
 		(this->CNT_ode4)(y_cnt, h_cnt, t_in, &CNT_obj::CNT_myrhs_wF);
 	
 	}
+
 	//performs one step of numerical integration with Stoermers method
 	void CNT_obj::timestep_stoermer( double t_in,int nstep)
 	{
 			 (this->CNT_stoerm)(y_cnt, h_cnt, t_in, nstep , &CNT_obj::CNT_myrhs_wF);	
 	}
+
 	//update a constant force applied
 	void CNT_obj::set_F(double F_in)
 	{
 		F_cnt=F_in;
 		Fper_cnt=F_in/((double)Npoints-3.0);
 	}
+
 	//changes the dissipation rate
 	void CNT_obj::set_gam(double gam_in)
 	{
 		gam_cnt=gam_in;
 		update_sig();
 	}
+
 	//changes the discretized unit of time
 	void CNT_obj::set_h(double h_in)
 	{
 		h_cnt=h_in;
 		update_sig();
 	}
+
 	//sets the temperature
 	void CNT_obj::set_temp(double temp_in)
 	{
 		temp_cnt=temp_in;
 		update_sig();
 	}
+
 	//changes the CNT diameter
 	void CNT_obj::set_d(double d_in)
 	{
@@ -231,6 +237,7 @@
 	{
 		sig_cnt=sqrt(h_cnt*temp_cnt/sigma*kb/Pi/d_cnt/X0_cnt)*sqrt(gam_cnt*6.0);
 	}
+
 	//update spring constants based on hollow CNT model 
 	void CNT_obj::update_Ks()
 	{
@@ -238,6 +245,7 @@
 		K_cnt=446/X0_cnt/X0_cnt;
 		kap_cnt=K_cnt*d_cnt*d_cnt/8.0;
 	}
+
 	//returns the "velocity perturbation amplitude"
 	double CNT_obj::get_sig()
  	{
