@@ -119,7 +119,7 @@
 			
 	    	for(i=0;i<3;i++){
 	            m=n+i;
-	            f[m+3]=0*(-gam_cnt*y[m+3])/(massarray[n/6])+ //damping forces
+	            f[m+3]=0*(-gam_cnt[n\6]*y[m+3])/(massarray[n/6])+ //damping forces
 			     (K_cnt_array[n/6]/massarray[n/6])*(Del[m]*(1-X0_cnt/d2)-Del[m-6]*(1-X0_cnt/d1))+ //forces due to stretching
 		    	     (kap_cnt_array[n/6-1]/massarray[n/6])*(Del[m-12]-Del[m-6]*rr/d11)/d01-
 			     (kap_cnt_array[n/6+1]/massarray[n/6])*(Del[m+6]-Del[m]*rr2/d22)/d32+
@@ -176,9 +176,9 @@
 		//implements thermal noise as velocity perturbations
 		for(i=15;i<N_cnt-12;i+=6)
             {
-                //y_cnt[i]+=sig_cnt*(2*ran1(seed)-1);
-                //y_cnt[i+1]+=sig_cnt*(2*ran1(seed)-1);
-                //y_cnt[i+2]+=sig_cnt*(2*ran1(seed)-1);
+                //y_cnt[i]+=sig_cnt[i-3/6]*(2*ran1(seed)-1);
+                //y_cnt[i+1]+=sig_cnt[i-3/6]*(2*ran1(seed)-1);
+                //y_cnt[i+2]+=sig_cnt[i-3/6]*(2*ran1(seed)-1);
 			}
 		//numerical inegration performed	
 		(this->CNT_ode4)(y_cnt, h_cnt, t_in, &CNT_obj::CNT_myrhs_wF);
@@ -201,7 +201,20 @@
 	//changes the dissipation rate
 	void CNT_obj::set_gam(double gam_in)
 	{
-		gam_cnt=gam_in;
+		double mass_sum, mass_average;
+		mass_sum=0;
+		
+		for(int i=0;i<N_cnt/6;i++)
+		{
+			mass_sum=mass_sum+massarray[i];
+		}
+	
+		mass_average=mass_sum/(N_cnt/6);
+		
+		for(int i=0;i<N_cnt/6;i++)
+		{
+			gam_cnt[i]=gam_in*(mass_average/massarray[i]);	
+		}
 		update_sig();
 	}
 
@@ -230,7 +243,11 @@
 	//changes "velocity perturbation amplitude" based on the simulation parameters
 	void CNT_obj::update_sig() 
 	{
-		sig_cnt=sqrt(h_cnt*temp_cnt/sigma*kb/Pi/d_cnt/X0_cnt)*sqrt(gam_cnt*6.0);
+		for(i=0;i<N_cnt/6;i++)
+		{
+			sig_cnt[i]=sqrt(h_cnt*temp_cnt/sigma*kb/Pi/d_cnt/X0_cnt)*sqrt(gam_cnt[i]*6.0);
+
+		}
 	}
 
 	//update spring constants based on hollow CNT model 
@@ -242,7 +259,7 @@
 	}
 
 	//returns the "velocity perturbation amplitude"
-	double CNT_obj::get_sig()
+	double* CNT_obj::get_sig()
  	{
   	 	   return sig_cnt;
  	}
