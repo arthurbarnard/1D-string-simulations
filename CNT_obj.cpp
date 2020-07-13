@@ -78,12 +78,7 @@
 	{
 	    double d0,d1,d2,d3,d01,d11,d22,d32,d12,temp,rr,rr1,rr2,d[N_cnt/6],Del[N_cnt],a;
 	    int m,i,n;
-	    
-// 	    double* massRead(char [], long long); When you compile this program, we get an undefined reference error. I believe these defintions are left unused so I commented them out
-// 	    double* K_cnt_read(char[], long long);
-// 	    double* kap_cnt_read(char[], long long);
 	    char* initfile=new char[20000];
-		
 		
 	    //measure some lengths
 	    for(n=0;n<N_cnt/6-1;n++)
@@ -120,9 +115,9 @@
 	        d22=d2*d2;
 	        d3=d[n/6+1];
 	        d32=d3*d2;
-	        // dVx/dt = -gamma*Vx + F_Vx(t) ... dVz/dt = -gamma*Vz + F_Vz(t)
-	        
-	    for(i=0;i<3;i++){
+	        // dVx/dt = -gamma*Vx + F_Vx(t) ... dVz/dt = -gamma*Vz + F_Vz(t)    
+			
+	    	for(i=0;i<3;i++){
 	            m=n+i;
 	            f[m+3]=0*(-gam_cnt*y[m+3])/(massarray[n/6])+ //damping forces
 			     (K_cnt_array[n/6]/massarray[n/6])*(Del[m]*(1-X0_cnt/d2)-Del[m-6]*(1-X0_cnt/d1))+ //forces due to stretching
