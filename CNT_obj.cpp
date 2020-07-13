@@ -76,34 +76,15 @@
 	// myrhs is the specific set of 1st order ODEs to be solved
 	void CNT_obj::CNT_myrhs(double y[], double t, double f[])
 	{
-	    double d0,d1,d2,d3,d01,d11,d22,d32,d12,temp,rr,rr1,rr2,d[N_cnt/6],Del[N_cnt],a,massarray[102],K_cnt_array[102],kap_cnt_array[102];
+	    double d0,d1,d2,d3,d01,d11,d22,d32,d12,temp,rr,rr1,rr2,d[N_cnt/6],Del[N_cnt],a;
 	    int m,i,n;
-	    long long int Nmass, N_K_cnt, N_kap_cnt;
-	    double* ymass;
-	    double* y_K_cnt;
-	    double* y_kap_cnt;
+	    
 // 	    double* massRead(char [], long long); When you compile this program, we get an undefined reference error. I believe these defintions are left unused so I commented them out
 // 	    double* K_cnt_read(char[], long long);
 // 	    double* kap_cnt_read(char[], long long);
 	    char* initfile=new char[20000];
 		
-		ymass=(double*)massRead(initfile, Nmass);
-		for(n=0;n<102;n++)
-		{
-			massarray[n]=ymass[n];
-		}
 		
-		y_K_cnt=(double*)K_cnt_read(initfile, N_K_cnt);
-		for (n=0;n<102;n++)
-		{
-			K_cnt_array[n]=y_K_cnt[n];
-		}
-		
-		y_kap_cnt=(double*)kap_cnt_read(initfile, N_kap_cnt);
-		for (n=0;n<102;n++)
-		{
-			kap_cnt_array[n]=y_kap_cnt[n];
-		}
 	    //measure some lengths
 	    for(n=0;n<N_cnt/6-1;n++)
 	    {
@@ -140,12 +121,16 @@
 	        d3=d[n/6+1];
 	        d32=d3*d2;
 	        // dVx/dt = -gamma*Vx + F_Vx(t) ... dVz/dt = -gamma*Vz + F_Vz(t)
-		for(i=0;i<3;i++){
+	        
+	    for(i=0;i<3;i++){
 	            m=n+i;
-	            f[m+3]=(-gam_cnt*y[m+3])/(massarray[n/6])+ //damping forces
-			   (K_cnt_array[m]*(Del[m]*(1-X0_cnt/d2)-Del[m-6]*(1-X0_cnt/d1)))/(massarray[n/6])+ //forces due to stretching
-		    	   (kap_cnt_array[m-1]*(Del[m-12]-Del[m-6]*rr/d11)/d01-kap_cnt_array[m+1]*(Del[m+6]-Del[m]*rr2/d22)/d32+kap_cnt_array[m]*(Del[m]*(1+rr1/d22)-Del[m-6]*(1+rr1/d11))/d12)/(massarray[n/6]);//forces due to bending
-	        }
+	            f[m+3]=0*(-gam_cnt*y[m+3])/(massarray[n/6])+ //damping forces
+			     (K_cnt_array[n/6]/massarray[n/6])*(Del[m]*(1-X0_cnt/d2)-Del[m-6]*(1-X0_cnt/d1))+ //forces due to stretching
+		    	     (kap_cnt_array[n/6-1]/massarray[n/6])*(Del[m-12]-Del[m-6]*rr/d11)/d01-
+			     (kap_cnt_array[n/6+1]/massarray[n/6])*(Del[m+6]-Del[m]*rr2/d22)/d32+
+			     (kap_cnt_array[n/6]/massarray[n/6])*(Del[m]*(1+rr1/d22)-Del[m-6]*(1+rr1/d11))/d12;//forces due to bending
+			
+			}
 	        //shift stored values for reuse on next data point
 		rr=rr1;
 	        rr1=rr2;
@@ -189,50 +174,56 @@
 		if ((temp=AM*iy)>RNMX) return RNMX;
 		else return temp;
 	}
-		
+
 	//performs one step of numerical integration with runge kutta
 	void CNT_obj::timestep( double t_in)
 	{	
 		//implements thermal noise as velocity perturbations
 		for(i=15;i<N_cnt-12;i+=6)
             {
-                y_cnt[i]+=sig_cnt*(2*ran1(seed)-1);
-                y_cnt[i+1]+=sig_cnt*(2*ran1(seed)-1);
-                y_cnt[i+2]+=sig_cnt*(2*ran1(seed)-1);
+                //y_cnt[i]+=sig_cnt*(2*ran1(seed)-1);
+                //y_cnt[i+1]+=sig_cnt*(2*ran1(seed)-1);
+                //y_cnt[i+2]+=sig_cnt*(2*ran1(seed)-1);
 			}
 		//numerical inegration performed	
 		(this->CNT_ode4)(y_cnt, h_cnt, t_in, &CNT_obj::CNT_myrhs_wF);
 	
 	}
+
 	//performs one step of numerical integration with Stoermers method
 	void CNT_obj::timestep_stoermer( double t_in,int nstep)
 	{
 			 (this->CNT_stoerm)(y_cnt, h_cnt, t_in, nstep , &CNT_obj::CNT_myrhs_wF);	
 	}
+
 	//update a constant force applied
 	void CNT_obj::set_F(double F_in)
 	{
 		F_cnt=F_in;
 		Fper_cnt=F_in/((double)Npoints-3.0);
 	}
+
 	//changes the dissipation rate
 	void CNT_obj::set_gam(double gam_in)
 	{
 		gam_cnt=gam_in;
 		update_sig();
 	}
+
 	//changes the discretized unit of time
 	void CNT_obj::set_h(double h_in)
 	{
 		h_cnt=h_in;
 		update_sig();
 	}
+
 	//sets the temperature
 	void CNT_obj::set_temp(double temp_in)
 	{
 		temp_cnt=temp_in;
 		update_sig();
 	}
+
 	//changes the CNT diameter
 	void CNT_obj::set_d(double d_in)
 	{
@@ -240,23 +231,51 @@
 		 update_Ks();
 		 update_sig();
 	}
+	
 	//changes "velocity perturbation amplitude" based on the simulation parameters
 	void CNT_obj::update_sig() 
 	{
 		sig_cnt=sqrt(h_cnt*temp_cnt/sigma*kb/Pi/d_cnt/X0_cnt)*sqrt(gam_cnt*6.0);
 	}
+
 	//update spring constants based on hollow CNT model 
 	void CNT_obj::update_Ks()
 	{
+		
 		K_cnt=446/X0_cnt/X0_cnt;
 		kap_cnt=K_cnt*d_cnt*d_cnt/8.0;
 	}
+
 	//returns the "velocity perturbation amplitude"
 	double CNT_obj::get_sig()
  	{
   	 	   return sig_cnt;
  	}
  	
+ 	void CNT_obj::load_Property_arrays()
+ 	{
+ 		
+ 		cout<<N_cnt<<endl;
+ 		ymass=(double*)massRead("", Nmass);
+		for(int n=0;n<N_cnt/6;n++)
+		{
+			massarray[n]=ymass[n];
+		}
+		
+		y_K_cnt=(double*)K_cnt_read("", N_K_cnt);
+		for (int n=0;n<N_cnt/6;n++)
+		{
+			K_cnt_array[n]=y_K_cnt[n];
+		
+		}
+		
+		y_kap_cnt=(double*)kap_cnt_read("", N_kap_cnt);
+		for (int n=0;n<N_cnt/6;n++)
+		{
+			kap_cnt_array[n]=y_kap_cnt[n];
+			cout<<n<<"  "<<massarray[n]<<"  "<<K_cnt_array[n]<<"  "<<kap_cnt_array[n]<<endl;
+		}
+	 }
  	
 	/*-------------------------------------------------------*/
 	//class definition of CNT_obj that stores relevant simulation parameters and coordinates of internal particsls
@@ -270,16 +289,27 @@
 		k3_cnt=k2_cnt+N_cnt;
 		k4_cnt=k3_cnt+N_cnt;
 		tempO_cnt=k4_cnt+N_cnt;
+		
 		cout<<"test in CNT_obj"<<endl;
 		X0_cnt=L_in/((double)Npoints_in-3.0);   
 
 		set_d(d_in);
 		y_cnt=new double[N_cnt];
+		massarray=new double[Npoints_in];
+		K_cnt_array=new double[Npoints_in];
+		kap_cnt_array=new double[Npoints_in];
+		
 		for(int i=0;i<N_cnt;i++) y_cnt[i]=0;
 		for(int i=0;i<N_cnt;i+=6) y_cnt[i]=i/6*X0_cnt;
 		void CNT_myrhs(double [], double, double []);
 		void CNT_ode4(double [], double, double, void(double [], double, double[]));
 		void CNT_stoerm(double [], double, double, int, void(double [], double, double[]));
+		
+		load_Property_arrays();
+		cout<<N_cnt<<endl;
+		cout<<massarray[0];
+		
+
 	}
 
 double* CNT_obj::massRead(char filename[],long long Nmass)
