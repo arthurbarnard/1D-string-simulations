@@ -13,7 +13,7 @@ int seed=-142;
 class CNT_obj
 {
     private:
-		double sig_cnt[102];
+		double* sig_cnt;
 		int N_cnt;
 		double *k1_cnt,*k2_cnt,*k3_cnt,*k4_cnt,*tempO_cnt;
 		void CNT_ode4(double yold[], double h, double t, void (CNT_obj::*frhs)(double [],double,double[]));
