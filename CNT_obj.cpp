@@ -246,7 +246,7 @@
 	{
 		for(i=0;i<N_cnt/6;i++)
 		{
-			sig_cnt[i]=sqrt(massarray[i]*kb*temp_cnt*h_cnt/X0_cnt*X0_cnt)*sqrt(gam_cnt[i]*6.0);
+			sig_cnt[i]=sqrt((6*gam_cnt[i]*kb*temp_cnt*h_cnt)/(X0_cnt*massarray[i]));
 		}
 	}
 
