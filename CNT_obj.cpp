@@ -119,7 +119,7 @@
 			
 	    	for(i=0;i<3;i++){
 	            m=n+i;
-	            f[m+3]=0*(-gam_cnt[n\6]*y[m+3])/(massarray[n/6])+ //damping forces
+	            f[m+3]=(-gam_cnt[n/6]*y[m+3])+ //damping forces
 			     (K_cnt_array[n/6]/massarray[n/6])*(Del[m]*(1-X0_cnt/d2)-Del[m-6]*(1-X0_cnt/d1))+ //forces due to stretching
 		    	     (kap_cnt_array[n/6-1]/massarray[n/6])*(Del[m-12]-Del[m-6]*rr/d11)/d01-
 			     (kap_cnt_array[n/6+1]/massarray[n/6])*(Del[m+6]-Del[m]*rr2/d22)/d32+
@@ -176,9 +176,10 @@
 		//implements thermal noise as velocity perturbations
 		for(i=15;i<N_cnt-12;i+=6)
             {
-                //y_cnt[i]+=sig_cnt[i-3/6]*(2*ran1(seed)-1);
-                //y_cnt[i+1]+=sig_cnt[i-3/6]*(2*ran1(seed)-1);
-                //y_cnt[i+2]+=sig_cnt[i-3/6]*(2*ran1(seed)-1);
+            	int n=(i-3)/6;
+                y_cnt[i]+=sig_cnt[n]*(2*ran1(seed)-1);
+                y_cnt[i+1]+=sig_cnt[n]*(2*ran1(seed)-1);
+                y_cnt[i+2]+=sig_cnt[n]*(2*ran1(seed)-1);
 			}
 		//numerical inegration performed	
 		(this->CNT_ode4)(y_cnt, h_cnt, t_in, &CNT_obj::CNT_myrhs_wF);
@@ -213,7 +214,7 @@
 		
 		for(int i=0;i<N_cnt/6;i++)
 		{
-			gam_cnt[i]=gam_in*(mass_average/massarray[i]);	
+			gam_cnt[i]=gam_in*(mass_average/massarray[i]);
 		}
 		update_sig();
 	}
@@ -246,7 +247,6 @@
 		for(i=0;i<N_cnt/6;i++)
 		{
 			sig_cnt[i]=sqrt(h_cnt*temp_cnt/sigma*kb/Pi/d_cnt/X0_cnt)*sqrt(gam_cnt[i]*6.0);
-
 		}
 	}
 
@@ -310,7 +310,7 @@
 		massarray=new double[Npoints_in];
 		K_cnt_array=new double[Npoints_in];
 		kap_cnt_array=new double[Npoints_in];
-		
+		gam_cnt = new double[Npoints_in];
 		for(int i=0;i<N_cnt;i++) y_cnt[i]=0;
 		for(int i=0;i<N_cnt;i+=6) y_cnt[i]=i/6*X0_cnt;
 		void CNT_myrhs(double [], double, double []);

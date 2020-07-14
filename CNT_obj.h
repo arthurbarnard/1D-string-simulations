@@ -30,7 +30,7 @@ class CNT_obj
 		double K_cnt;
 		double kap_cnt;
 		double* y_cnt;
-		double gam_cnt[102];
+		double* gam_cnt;
 		double temp_cnt;
 		double h_cnt;
 		double F_cnt;
