@@ -246,7 +246,7 @@
 	{
 		for(i=0;i<N_cnt/6;i++)
 		{
-			sig_cnt[i]=sqrt(h_cnt*temp_cnt/sigma*kb/Pi/d_cnt/X0_cnt)*sqrt(gam_cnt[i]*6.0);
+			sig_cnt[i]=sqrt(massarray[i]*kb*temp_cnt*h_cnt/X0_cnt*X0_cnt)*sqrt(gam_cnt[i]*6.0);
 		}
 	}
 
@@ -311,6 +311,7 @@
 		K_cnt_array=new double[Npoints_in];
 		kap_cnt_array=new double[Npoints_in];
 		gam_cnt = new double[Npoints_in];
+		sig_cnt=new double[Npoints_in];
 		for(int i=0;i<N_cnt;i++) y_cnt[i]=0;
 		for(int i=0;i<N_cnt;i+=6) y_cnt[i]=i/6*X0_cnt;
 		void CNT_myrhs(double [], double, double []);
