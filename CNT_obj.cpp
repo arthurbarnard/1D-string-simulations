@@ -285,7 +285,6 @@
 		for (int n=0;n<N_cnt/6;n++)
 		{
 			kap_cnt_array[n]=y_kap_cnt[n];
-			cout<<n<<"  "<<massarray[n]<<"  "<<K_cnt_array[n]<<"  "<<kap_cnt_array[n]<<endl;
 		}
 	 }
  	
@@ -302,16 +301,16 @@
 		k4_cnt=k3_cnt+N_cnt;
 		tempO_cnt=k4_cnt+N_cnt;
 		
-		cout<<"test in CNT_obj"<<endl;
 		X0_cnt=L_in/((double)Npoints_in-3.0);   
-
-		set_d(d_in);
-		y_cnt=new double[N_cnt];
 		massarray=new double[Npoints_in];
 		K_cnt_array=new double[Npoints_in];
 		kap_cnt_array=new double[Npoints_in];
 		gam_cnt = new double[Npoints_in];
-		sig_cnt=new double[Npoints_in];
+		y_cnt=new double[N_cnt];
+		sig_cnt = new double[Npoints_in];
+		//cout<<"test in CNT_obj"<<endl;
+		
+		set_d(d_in);
 		for(int i=0;i<N_cnt;i++) y_cnt[i]=0;
 		for(int i=0;i<N_cnt;i+=6) y_cnt[i]=i/6*X0_cnt;
 		void CNT_myrhs(double [], double, double []);
