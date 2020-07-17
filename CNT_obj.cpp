@@ -78,8 +78,7 @@
 	{
 	    double d0,d1,d2,d3,d01,d11,d22,d32,d12,temp,rr,rr1,rr2,d[N_cnt/6],Del[N_cnt],a;
 	    int m,i,n;
-	    char* initfile=new char[20000];
-		
+	    
 	    //measure some lengths
 	    for(n=0;n<N_cnt/6-1;n++)
 	    {
@@ -176,7 +175,7 @@
 		//implements thermal noise as velocity perturbations
 		for(i=15;i<N_cnt-12;i+=6)
             {
-            	int n=(i-3)/6;
+            	n=(i-3)/6;
                 y_cnt[i]+=sig_cnt[n]*(2*ran1(seed)-1);
                 y_cnt[i+1]+=sig_cnt[n]*(2*ran1(seed)-1);
                 y_cnt[i+2]+=sig_cnt[n]*(2*ran1(seed)-1);

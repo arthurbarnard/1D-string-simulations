@@ -24,7 +24,7 @@ class CNT_obj
 
 	public: 
 		int Npoints;
-		int i;
+		int i,n;
 		double X0_cnt;
 		double d_cnt;
 		double K_cnt;
