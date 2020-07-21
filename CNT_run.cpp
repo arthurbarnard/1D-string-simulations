@@ -100,10 +100,7 @@ int main(int argc, char**argv)
 	strcat(kapfile,".txt");
 	y_kap_cnt=(double*)myCNT.kap_cnt_read(kapfile,N_kap_cnt);
 	
-    int middleInd = floor(Nin/6/2-1)*6; //index pertaining to the middle of the CNT
-    myCNT.set_h(h);
-	myCNT.set_temp(temperature);
-	myCNT.set_gam(100E-7); 
+	int middleInd = floor(Nin/6/2-1)*6; //index pertaining to the middle of the CNT
 	
 	//load the input file data into the CNT_obj
 	for(i=0;i<myCNT.Npoints*6;i++)
@@ -115,8 +112,14 @@ int main(int argc, char**argv)
 	{
 		myCNT.massarray[i]=ymass[i];
 		myCNT.K_cnt_array[i]=y_K_cnt[i];
-		myCNT.kap_cnt_array[i]=y_kap_cnt[i];;
+		myCNT.kap_cnt_array[i]=y_kap_cnt[i];
+			
 	}
+
+    myCNT.set_h(h);
+	myCNT.set_temp(temperature);
+	myCNT.set_gam(100E-7); 
+
 	
 	//initialize outputFile name from input arguments
 	char *outputFile=new char[20000];
