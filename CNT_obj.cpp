@@ -120,13 +120,13 @@
 	            m=n+i;
 	            f[m+3]=(-gam_cnt[n/6]*y[m+3])+ //damping forces
 			     (K_cnt_array[n/6]/massarray[n/6])*(Del[m]*(1-X0_cnt/d2)-Del[m-6]*(1-X0_cnt/d1))+ //forces due to stretching
-		    	     (kap_cnt_array[n/6-1]/massarray[n/6])*(Del[m-12]-Del[m-6]*rr/d11)/d01-
+		    	 (kap_cnt_array[n/6-1]/massarray[n/6])*(Del[m-12]-Del[m-6]*rr/d11)/d01-
 			     (kap_cnt_array[n/6+1]/massarray[n/6])*(Del[m+6]-Del[m]*rr2/d22)/d32+
 			     (kap_cnt_array[n/6]/massarray[n/6])*(Del[m]*(1+rr1/d22)-Del[m-6]*(1+rr1/d11))/d12;//forces due to bending
 			
 			}
 	        //shift stored values for reuse on next data point
-		rr=rr1;
+			rr=rr1;
 	        rr1=rr2;
 	        rr2=Del[n+6]*Del[n+12]+Del[n+7]*Del[n+13]+Del[n+8]*Del[n+14];			
 	    }
@@ -276,7 +276,7 @@
 		k4_cnt=k3_cnt+N_cnt;
 		tempO_cnt=k4_cnt+N_cnt;
 		
-		X0_cnt=L_in/((double)Npoints_in-3.0);   
+		X0_cnt=(L_in)/((double)Npoints_in-3.0);   
 		massarray=new double[Npoints_in];
 		K_cnt_array=new double[Npoints_in];
 		kap_cnt_array=new double[Npoints_in];
