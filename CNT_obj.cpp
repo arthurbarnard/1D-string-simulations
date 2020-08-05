@@ -286,6 +286,7 @@
 		//cout<<"test in CNT_obj"<<endl;
 		
 		set_d(d_in);
+		set_F(0.0);
 		for(int i=0;i<N_cnt;i++) y_cnt[i]=0;
 		for(int i=0;i<N_cnt;i+=6) y_cnt[i]=i/6*X0_cnt;
 		void CNT_myrhs(double [], double, double []);
