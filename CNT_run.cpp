@@ -40,7 +40,7 @@ int main(int argc, char**argv)
 	/*-------edit simulation parameters here------------*/
 	nstep=4.5E9; //total number of time steps
 	nwait=40E6; //number of time steps for initial thermalization
-	h=(1.28*20)/(3); //time step in ps
+	h=(1.28*10); //time step in ps
 	d=3; //diameter in nm
 	L=5000.; //length in nm
 	temperature=10; //temperature in Kelvin
