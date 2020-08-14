@@ -40,10 +40,10 @@ int main(int argc, char**argv)
 	/*-------edit simulation parameters here------------*/
 	nstep=4.5E9; //total number of time steps
 	nwait=40E6; //number of time steps for initial thermalization
-	h=1.28*20; //time step in ps
+	h=(1.28*20)/(3); //time step in ps
 	d=3; //diameter in nm
 	L=5000.; //length in nm
-	temperature=300.0; //temperature in Kelvin
+	temperature=10; //temperature in Kelvin
 	dispRate=(100E-7)/(20); //dissipation rate in (ps^-1)
 	
 	T=nstep*h; 
@@ -118,7 +118,7 @@ int main(int argc, char**argv)
 
     myCNT.set_h(h);
 	myCNT.set_temp(temperature);
-	myCNT.set_gam(100E-7); 
+	myCNT.set_gam((100E-7)/(20)); 
 
 	
 	//initialize outputFile name from input arguments
