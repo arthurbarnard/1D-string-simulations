@@ -40,11 +40,11 @@ int main(int argc, char**argv)
 	/*-------edit simulation parameters here------------*/
 	nstep=4.5E9; //total number of time steps
 	nwait=40E6; //number of time steps for initial thermalization
-	h=(1.28*10); //time step in ps
+	h=(1.28)*10; //time step in ps
 	d=3; //diameter in nm
 	L=5000.; //length in nm
 	temperature=10; //temperature in Kelvin
-	dispRate=(100E-7)/(20); //dissipation rate in (ps^-1)
+	dispRate=(100E-7)/(10); //dissipation rate in (ps^-1)
 	
 	T=nstep*h; 
 	
@@ -88,6 +88,8 @@ int main(int argc, char**argv)
 	Kfile[S4-3]=fmod(fileNum/100.0,10.0)+48;
 	strcat(Kfile,".txt");
 	y_K_cnt=(double*)myCNT.K_cnt_read(Kfile,N_K_cnt);
+	
+	for(i=0;i<101;i++) cout<<y_K_cnt[i]<<endl;
 	
 	char *kapfile=new char[20000];
 	for(i=0;i<20000;i++)kapfile[i]='\0';

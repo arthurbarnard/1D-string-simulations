@@ -119,7 +119,8 @@
 	    	for(i=0;i<3;i++){
 	            m=n+i;
 	            f[m+3]=(-gam_cnt[n/6]*y[m+3])+ //damping forces
-			     (K_cnt_array[n/6]/massarray[n/6])*(Del[m]*(1-X0_cnt/d2)-Del[m-6]*(1-X0_cnt/d1))+ //forces due to stretching
+			     (K_cnt_array[n/6]*Del[m]*(1-X0_cnt/d2)-K_cnt_array[n/6-1]*Del[m-6]*(1-X0_cnt/d1))/massarray[n/6]+ //forces due to stretching
+		    	 ///_cnt_array[n/6]*(Del[m]*(1-X0_cnt/d2)-Del[m-6]*(1-X0_cnt/d1))/massarray[n/6]+ //forces due to stretching
 		    	 (kap_cnt_array[n/6-1]/massarray[n/6])*(Del[m-12]-Del[m-6]*rr/d11)/d01-
 			     (kap_cnt_array[n/6+1]/massarray[n/6])*(Del[m+6]-Del[m]*rr2/d22)/d32+
 			     (kap_cnt_array[n/6]/massarray[n/6])*(Del[m]*(1+rr1/d22)-Del[m-6]*(1+rr1/d11))/d12;//forces due to bending
@@ -277,8 +278,9 @@
 		tempO_cnt=k4_cnt+N_cnt;
 		
 		X0_cnt=(L_in)/((double)Npoints_in-3.0);   
+		cout << X0_cnt <<endl;
 		massarray=new double[Npoints_in];
-		K_cnt_array=new double[Npoints_in];
+		K_cnt_array=new double[Npoints_in-1];
 		kap_cnt_array=new double[Npoints_in];
 		gam_cnt = new double[Npoints_in];
 		y_cnt=new double[N_cnt];
